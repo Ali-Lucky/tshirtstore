@@ -30,3 +30,22 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+
+paths:
+  /dummy:
+    get:
+      tags:
+        - Home
+      summary: return a greet message
+      responses:
+        200:
+          descripition: All good and success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "mystring"
+        400:
+          descripition: Bad request
+        500: 
+          descripition: Internal server error
