@@ -49,3 +49,70 @@ paths:
           descripition: Bad request
         500: 
           descripition: Internal server error
+
+  /signup:
+    post:
+      tags:
+        - User
+      summary: signup a new user
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - photo
+              properties:
+                name:
+                  type: string
+                  required: true
+                email:
+                  type: string
+                  required: true
+                password:
+                  type: string
+                  required: true
+                photo:
+                  in: formData
+                  descripition: Uploaded file data
+                  type: file
+                  format: binary
+      responses:
+        200:
+          descripition: All good and success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      photo:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          secure_url:
+                            type: string
+                      _id:
+                        type: string
+                      createdAt:
+                        type: string
+        400:
+          descripition: Bad request
+        500:
+          descripition: Internal server error
