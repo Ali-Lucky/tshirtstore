@@ -2,11 +2,9 @@ const User = require('../models/user');
 const BigPromise = require('../middlewares/bigPromise');
 const CustomError = require('../utils/customError');
 const cookieToken = require('../utils/cookieToken');
-const fileUpload = require('express-fileupload');
 const cloudinary = require('cloudinary');
 const mailHelper = require('../utils/emailHelper');
 const crypto = require('crypto');
-const { use } = require('../routes/user');
 
 exports.signup = BigPromise(async (req, res, next) => {
 
@@ -91,7 +89,7 @@ exports.forgotPassword = BigPromise(async (req, res, next) => {
     if (!user) {
         return next(new CustomError('Email not found', 400));
     };
-    
+
     // get token from user model methods
     const forgotToken = user.getForgotpasswordToken();
 
@@ -204,7 +202,7 @@ exports.updateUserDetails = BigPromise(async (req, res, next) => {
 
     if (req.files) {
         const user = await User.findById(userId);
-        
+
         const imageId = user.photo.id;
 
         const removeFile = await cloudinary.v2.uploader.destroy(imageId);
@@ -240,7 +238,7 @@ exports.adminAllUsers = BigPromise(async (req, res, next) => {
     });
 });
 
-exports.adminGetOneUser = BigPromise(async(req,res,next)=>{
+exports.adminGetOneUser = BigPromise(async (req, res, next) => {
     const user = await User.findById(req.params.id);
 
     if (!user) {
@@ -253,7 +251,7 @@ exports.adminGetOneUser = BigPromise(async(req,res,next)=>{
     });
 });
 
-exports.adminUpdateOneUser = BigPromise(async (req,res,next)=>{
+exports.adminUpdateOneUser = BigPromise(async (req, res, next) => {
     const newData = {
         name: req.body.name,
         email: req.body.email,
@@ -270,10 +268,10 @@ exports.adminUpdateOneUser = BigPromise(async (req,res,next)=>{
     });
 });
 
-exports.adminDeleteOneUser= BigPromise(async(req,res,next)=>{
+exports.adminDeleteOneUser = BigPromise(async (req, res, next) => {
     const user = await User.findById(req.params.id);
 
-    if (!user){
+    if (!user) {
         return next(new CustomError('No user found'), 404);
     };
 
@@ -288,7 +286,7 @@ exports.adminDeleteOneUser= BigPromise(async(req,res,next)=>{
     });
 });
 
-exports.managerAllUser = BigPromise(async (req,res,next)=>{
+exports.managerAllUser = BigPromise(async (req, res, next) => {
     const users = await User.find({ role: "user" });
 
     return res.status(200).json({
