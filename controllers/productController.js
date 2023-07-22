@@ -23,7 +23,7 @@ exports.addProduct = BigPromise(async (req, res, next) => {
                 const result = await cloudinary.v2.uploader.upload(req.files.photos[i].tempFilePath, {
                     folder: 'products'
                 });
-    
+
                 imageArray.push({
                     id: result.public_id,
                     secure_url: result.secure_url
@@ -121,9 +121,9 @@ exports.adminUpdateProduct = BigPromise(async (req, res, next) => {
                 const result = await cloudinary.v2.uploader.upload(req.files.photos[i].tempFilePath, {
                     folder: "products"
                 });
-    
+
                 // console.log("result");
-    
+
                 imagesArray.push({
                     id: result.public_id,
                     secure_url: result.secure_url
@@ -174,4 +174,37 @@ exports.adminDeleteProduct = BigPromise(async (req, res, next) => {
         success: true,
         message: "Product deleted"
     });
+});
+
+exports.addReview = BigPromise(async (req, res, next) => {
+    const { rating, comment } = req.body;
+
+    const review = {
+        user: req.user._id,
+        name: req.user.name,
+        rating: rating,
+        comment
+    };
+
+    const product = await Product.findById(req.params.id);
+
+    // console.log(product);
+    // console.log(product.reviews[0].user);
+    // console.log(req.user._id);
+    // if (product.reviews[0].user.toString === req.user._id.to){
+    //     console.log(true);
+    // } else {
+    //     console.log(false);
+    // }
+    const alreadyReview = product.reviews.find(
+        (rev) => JSON.stringify(rev.user) === JSON.stringify(req.user._id)
+    );
+
+    if (alreadyReview) {
+        product.reviews
+        review
+    } else {
+        
+    };
+
 });
