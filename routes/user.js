@@ -30,9 +30,9 @@ router.route('/userdashboard/update').post(isLoggedIn, updateUserDetails);
 
 router.route('/admin/users').get(isLoggedIn, customRole("admin"), adminAllUsers);
 router.route('/admin/user/:id')
-.get(isLoggedIn, customRole("admin"), adminGetOneUser)
-.put(isLoggedIn, customRole("admin"), adminUpdateOneUser)
-.delete(isLoggedIn, customRole("admin"), adminDeleteOneUser);
+    .get(isLoggedIn, customRole("admin"), adminGetOneUser)
+    .put(isLoggedIn, customRole("admin"), adminUpdateOneUser)
+    .delete(isLoggedIn, customRole("admin"), adminDeleteOneUser);
 
 router.route('/manager/users').get(isLoggedIn, customRole("manager"), managerAllUser);
 
