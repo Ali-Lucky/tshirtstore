@@ -75,6 +75,105 @@ exports.getAllProduct = BigPromise(async (req, res, next) => {
     });
 });
 
+// exports.addReview = BigPromise(async (req, res, next) => {
+//     const { rating, comment } = req.body;
+
+//     const review = {
+//         user: req.user._id,
+//         name: req.user.name,
+//         rating: rating,
+//         comment
+//     };
+
+//     const product = await Product.findById(req.params.id);
+
+//     const alreadyReview = product.reviews.find(
+//         (rev) => JSON.stringify(rev.user) === JSON.stringify(req.user._id)
+//     );
+
+//     if (alreadyReview) {
+//         product.reviews.forEach((review) => {
+//             if (review.user.toString() === req.user._id.toString()) {
+//                 review.rating = rating;
+//                 review.comment = comment;
+//             };
+//         });
+//     } else {
+//         product.reviews.push(review);
+//         product.numberOfReviews = product.reviews.length;
+//     };
+
+//     // const totalRatings = product.reviews.reduce((acc, item) => item.rating + acc, 0);
+//     // if (product.reviews.length > 0) {
+//     //     product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+//     // } else {
+//     //     product.ratings = rating;
+//     // };
+
+//     // const totalRatings = product.reviews.reduce((acc, item) => item.rating + acc, 0, console.log(item));
+//     // console.log(totalRatings);
+//     // product.ratings = totalRatings / product.reviews.length;
+
+//     // const averageRating = product.reviews.length > 0 ? totalRatings / product.reviews.length : rating;
+//     // product.ratings = averageRating;
+
+//     // product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+
+//     // product.ratings =
+//     // product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+//     // product.reviews.length;
+
+//     const totalRatings = product.reviews.reduce((acc, review) => acc + review.rating, 0);
+//     console.log(totalRatings);
+//     product.ratings = totalRatings / product.reviews.length;
+
+//     await product.save({ validateBeforeSave: false });
+
+//     return res.status(200).json({
+//         success: true
+//     });
+// });
+
+exports.addReview = BigPromise(async (req, res, next) => {
+    const { rating, comment } = req.body;
+
+    const review = {
+        user: req.user._id,
+        name: req.user.name,
+        rating: rating,
+        comment
+    };
+
+    const product = await Product.findById(req.params.id);
+
+    const alreadyReview = product.reviews.find(
+        (rev) => JSON.stringify(rev.user) === JSON.stringify(req.user._id)
+    );
+
+    if (alreadyReview) {
+        product.reviews.forEach((rev) => {
+            if (rev.user.toString() === req.user._id.toString()) {
+                rev.rating = rating;
+                rev.comment = comment;
+            }
+        });
+    } else {
+        product.reviews.push(review);
+        product.numberOfReviews = product.reviews.length;
+    }
+
+    const totalRatings = product.reviews.reduce((acc, rev) => acc + rev.rating, 0);
+    console.log(totalRatings);
+    product.ratings = totalRatings / product.reviews.length;
+
+    await product.save({ validateBeforeSave: false });
+
+    return res.status(200).json({
+        success: true
+    });
+});
+
+
 // admin routes
 exports.adminGetAllProducts = BigPromise(async (req, res, next) => {
     const products = await Product.find();
@@ -176,35 +275,3 @@ exports.adminDeleteProduct = BigPromise(async (req, res, next) => {
     });
 });
 
-exports.addReview = BigPromise(async (req, res, next) => {
-    const { rating, comment } = req.body;
-
-    const review = {
-        user: req.user._id,
-        name: req.user.name,
-        rating: rating,
-        comment
-    };
-
-    const product = await Product.findById(req.params.id);
-
-    // console.log(product);
-    // console.log(product.reviews[0].user);
-    // console.log(req.user._id);
-    // if (product.reviews[0].user.toString === req.user._id.to){
-    //     console.log(true);
-    // } else {
-    //     console.log(false);
-    // }
-    const alreadyReview = product.reviews.find(
-        (rev) => JSON.stringify(rev.user) === JSON.stringify(req.user._id)
-    );
-
-    if (alreadyReview) {
-        product.reviews
-        review
-    } else {
-        
-    };
-
-});
