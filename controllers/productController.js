@@ -75,65 +75,6 @@ exports.getAllProduct = BigPromise(async (req, res, next) => {
     });
 });
 
-// exports.addReview = BigPromise(async (req, res, next) => {
-//     const { rating, comment } = req.body;
-
-//     const review = {
-//         user: req.user._id,
-//         name: req.user.name,
-//         rating: rating,
-//         comment
-//     };
-
-//     const product = await Product.findById(req.params.id);
-
-//     const alreadyReview = product.reviews.find(
-//         (rev) => JSON.stringify(rev.user) === JSON.stringify(req.user._id)
-//     );
-
-//     if (alreadyReview) {
-//         product.reviews.forEach((review) => {
-//             if (review.user.toString() === req.user._id.toString()) {
-//                 review.rating = rating;
-//                 review.comment = comment;
-//             };
-//         });
-//     } else {
-//         product.reviews.push(review);
-//         product.numberOfReviews = product.reviews.length;
-//     };
-
-//     // const totalRatings = product.reviews.reduce((acc, item) => item.rating + acc, 0);
-//     // if (product.reviews.length > 0) {
-//     //     product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
-//     // } else {
-//     //     product.ratings = rating;
-//     // };
-
-//     // const totalRatings = product.reviews.reduce((acc, item) => item.rating + acc, 0, console.log(item));
-//     // console.log(totalRatings);
-//     // product.ratings = totalRatings / product.reviews.length;
-
-//     // const averageRating = product.reviews.length > 0 ? totalRatings / product.reviews.length : rating;
-//     // product.ratings = averageRating;
-
-//     // product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
-
-//     // product.ratings =
-//     // product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-//     // product.reviews.length;
-
-//     const totalRatings = product.reviews.reduce((acc, review) => acc + review.rating, 0);
-//     console.log(totalRatings);
-//     product.ratings = totalRatings / product.reviews.length;
-
-//     await product.save({ validateBeforeSave: false });
-
-//     return res.status(200).json({
-//         success: true
-//     });
-// });
-
 exports.addReview = BigPromise(async (req, res, next) => {
     const { rating, comment } = req.body;
 
@@ -170,6 +111,45 @@ exports.addReview = BigPromise(async (req, res, next) => {
 
     return res.status(200).json({
         success: true
+    });
+});
+
+exports.deleteReview = BigPromise(async (req, res, next) => {
+    const productId = req.params.id;
+
+    const product = await Product.findById(productId);
+
+    const reviews = product.reviews.filter((rev) =>
+        rev.user.toString() !== req.user._id.toString()
+    );
+
+    const numberOfReviews = reviews.length;
+
+    const ratings = reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
+
+    await Product.findByIdAndUpdate(productId, {
+        ratings,
+        numberOfReviews,
+        reviews
+    },
+        {
+            new: true,
+            runValidators: true
+        });
+
+    return res.status(200).json({
+        success: true
+    });
+});
+
+exports.getOnlyReviewOfOneProduct = BigPromise(async (req, res, next) => {
+    const productId = req.params.id;
+
+    const product = await Product.findById(productId);
+
+    return res.status(200).json({
+        success: true,
+        reviews: product.reviews
     });
 });
 
