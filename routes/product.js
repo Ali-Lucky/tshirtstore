@@ -1,7 +1,8 @@
 const express = require('express');
+const router = express.Router();
+
 const { addProduct, getAllProduct, adminGetAllProducts, getOneProduct, adminUpdateProduct, adminDeleteProduct, addReview, deleteReview, getOnlyReviewOfOneProduct } = require('../controllers/productController');
 const { isLoggedIn, customRole } = require('../middlewares/user');
-const router = express.Router();
 
 // user routes
 router.route('/products').get(getAllProduct);
