@@ -66,10 +66,26 @@ exports.adminUpdateOrder = BigPromise(async(req,res,next)=>{
 
     order.oredrStatus = req.body.oredrStatus;
 
+    order.orderItems.forEach(async (prod) => {
+        await updateProductStock(prod.product, prod.quantity);
+    });
 
+    await order.save();
+
+    return res.status(200).json({
+        success: true,
+        order
+    });
+});
+
+async function updateProductStock(productId, quantity) {
+    const product = await Product.findById(productId);
+
+    product.stock = product.stock - quantity;
+
+    await product.save({ validateBeforeSave: false });
+};
+
+exports.adminDeleteProduct = BigPromise(async (req,res,next)=>{
+    
 })
-
-// async updateProductStock(productId, quantity) => {
-//     const product = await Product.findById(productId);
-
-// }
